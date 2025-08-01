@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPrice - Prediksi Harga & Pemilihan Mobil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .prediction-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .carousel-item {
+            transition: transform 0.5s ease;
+        }
+        
+        /* Animation for prediction result */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-animation {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-car text-blue-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-blue-600">AutoPrice</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#home" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Beranda</a>
+                    <a href="#predict" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Prediksi Harga</a>
+                    <a href="#cars" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Pilih Mobil</a>
+                    <a href="#about" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Tentang</a>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#home" class="bg-blue-50 border-blue-500 text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Beranda</a>
+                <a href="#predict" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block px-3 py-2 rounded-md text-base font-medium">Prediksi Harga</a>
+                <a href="#cars" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block px-3 py-2 rounded-md text-base font-medium">Pilih Mobil</a>
+                <a href="#about" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block px-3 py-2 rounded-md text-base font-medium">Tentang</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20" id="home">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Prediksi Harga Mobil dengan Akurat</h1>
+                    <p class="text-xl mb-8">Gunakan teknologi machine learning untuk memperkirakan harga mobil berdasarkan berbagai parameter. Dapatkan rekomendasi mobil terbaik sesuai kebutuhan Anda.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#predict" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-center transition duration-300">Mulai Prediksi</a>
+                        <a href="#cars" class="bg-transparent border-2 border-white hover:bg-white hover:text-blue-600 font-bold py-3 px-6 rounded-lg text-center transition duration-300">Lihat Mobil</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://placehold.co/600x400" alt="Modern luxury car with sleek design parked in front of a city skyline at sunset" class="rounded-lg shadow-xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prediction Section -->
+    <section class="py-16 bg-gray-50" id="predict">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Prediksi Harga Mobil</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Masukkan detail mobil Anda untuk mendapatkan perkiraan harga yang akurat menggunakan model machine learning kami.</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Input Form -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white rounded-xl shadow-md p-6 prediction-card">
+                        <div class="flex border-b mb-6">
+                            <button class="tab-active py-2 px-4 mr-4 ">Prediksi Harga</button>
+                            <button class="py-2 px-4 text-gray-600 hover:text-blue-600" id="colab-tab">Integrasi Colab</button>
+                        </div>
+                        
+                        <form id="prediction-form">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Merek Mobil</label>
+                                    <select id="brand" name="brand" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="">Pilih Merek</option>
+                                        <option value="toyota">Toyota</option>
+                                        <option value="honda">Honda</option>
+                                        <option value="suzuki">Suzuki</option>
+                                        <option value="daihatsu">Daihatsu</option>
+                                        <option value="mitsubishi">Mitsubishi</option>
+                                        <option value="nissan">Nissan</option>
+                                        <option value="bmw">BMW</option>
+                                        <option value="mercedes">Mercedes-Benz</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="model" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                                    <input type="text" id="model" name="model" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Avanza, Civic">
+                                </div>
+                                
+                                <div>
+                                    <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Tahun Produksi</label>
+                                    <input type="number" id="year" name="year" min="1990" max="2023" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Tahun">
+                                </div>
+                                
+                                <div>
+                                    <label for="mileage" class="block text-sm font-medium text-gray-700 mb-1">Kilometer</label>
+                                    <input type="number" id="mileage" name="mileage" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Total kilometer">
+                                </div>
+                                
+                                <div>
+                                    <label for="transmission" class="block text-sm font-medium text-gray-700 mb-1">Transmisi</label>
+                                    <select id="transmission" name="transmission" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="automatic">Automatic</option>
+                                        <option value="manual">Manual</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="fuel" class="block text-sm font-medium text-gray-700 mb-1">Bahan Bakar</label>
+                                    <select id="fuel" name="fuel" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="petrol">Bensin</option>
+                                        <option value="diesel">Diesel</option>
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="electric">Listrik</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="engine" class="block text-sm font-medium text-gray-700 mb-1">Kapasitas Mesin (cc)</label>
+                                    <input type="number" id="engine" name="engine" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: 1500">
+                                </div>
+                                
+                                <div>
+                                    <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
+                                    <select id="condition" name="condition" class="input-field w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="excellent">Sangat Baik</option>
+                                        <option value="good">Baik</option>
+                                        <option value="fair">Cukup</option>
+                                        <option value="poor">Buruk</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center">
+                                    <i class="fas fa-calculator mr-2"></i> Prediksi Harga
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Result Section -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white rounded-xl shadow-md p-6 h-full prediction-card">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">Hasil Prediksi</h3>
+                        
+                        <div id="prediction-result" class="flex flex-col items-center justify-center h-full">
+                            <div class="text-center py-12">
+                                <i class="fas fa-car text-gray-300 text-6xl mb-4"></i>
+                                <p class="text-gray-500">Masukkan detail mobil untuk melihat prediksi harga</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Colab Integration Section (Hidden by default) -->
+                        <div id="colab-section" class="hidden h-full">
+                            <div class="mb-4">
+                                <h4 class="font-medium text-gray-700 mb-2">Integrasi dengan Google Colab</h4>
+                                <p class="text-sm text-gray-600 mb-4">Untuk menggunakan model machine learning dari Google Colab, salin kode berikut dan tempelkan di notebook Colab Anda:</p>
+                                <div class="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                                    <pre class="text-sm">
+# Kode untuk integrasi dengan Google Colab
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+import pickle
+
+# Load model (ganti dengan path model Anda)
+with open('car_price_model.pkl', 'rb') as file:
+    model = pickle.load(file)
+
+# Fungsi untuk prediksi harga
+def predict_car_price(brand, model_year, mileage, transmission, fuel, engine_size, condition):
+    # Preprocess input
+    input_data = pd.DataFrame({
+        'brand': [brand],
+        'year': [model_year],
+        'mileage': [mileage],
+        'transmission': [transmission],
+        'fuel': [fuel],
+        'engine_size': [engine_size],
+        'condition': [condition]
+    })
+    
+    # Lakukan prediksi
+    prediction = model.predict(input_data)
+    return prediction[0]
+
+# Contoh penggunaan
+# predicted_price = predict_car_price('toyota', 2018, 50000, 'automatic', 'petrol', 1500, 'good')
+# print(f"Predicted price: {predicted_price:,.2f}")</pre>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-sm text-gray-600">Atau gunakan endpoint API berikut untuk integrasi langsung:</p>
+                                <div class="bg-gray-100 p-3 rounded-md mt-2">
+                                    <code class="text-sm text-gray-800">POST https://your-colab-backend/predict</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Car Selection Section -->
+    <section class="py-16 bg-white" id="cars">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Pilih Mobil Terbaik</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Temukan mobil yang sesuai dengan kebutuhan dan budget Anda dari koleksi kami.</p>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="mb-8 bg-gray-50 p-6 rounded-xl">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-lg font-medium text-gray-900">Filter Mobil</h3>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="filter-brand" class="block text-sm font-medium text-gray-700 mb-1">Merek</label>
+                            <select id="filter-brand" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Merek</option>
+                                <option value="toyota">Toyota</option>
+                                <option value="honda">Honda</option>
+                                <option value="suzuki">Suzuki</option>
+                                <option value="daihatsu">Daihatsu</option>
+                                <option value="mitsubishi">Mitsubishi</option>
+                                <option value="nissan">Nissan</option>
+                                <option value="bmw">BMW</option>
+                                <option value="mercedes">Mercedes</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filter-price" class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+                            <select id="filter-price" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Harga</option>
+                                <option value="0-100">Di bawah 100 juta</option>
+                                <option value="100-300">100 - 300 juta</option>
+                                <option value="300-500">300 - 500 juta</option>
+                                <option value="500-1000">500 juta - 1 M</option>
+                                <option value="1000+">Di atas 1 M</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filter-type" class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
+                            <select id="filter-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Tipe</option>
+                                <option value="city">City Car</option>
+                                <option value="suv">SUV</option>
+                                <option value="mpv">MPV</option>
+                                <option value="sedan">Sedan</option>
+                                <option value="sport">Sport</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filter-year" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                            <select id="filter-year" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Tahun</option>
+                                <option value="2020-2023">2020 - 2023</option>
+                                <option value="2015-2019">2015 - 2019</option>
+                                <option value="2010-2014">2010 - 2014</option>
+                                <option value="2005-2009">2005 - 2009</option>
+                                <option value="2000-2004">2000 - 2004</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Car List -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="car-list">
+                <!-- Car items will be loaded here -->
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="mt-10 text-center">
+                <button id="load-more" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center">
+                    <i class="fas fa-plus-circle mr-2"></i> Muat Lebih Banyak
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Background Car Collection -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Koleksi Mobil Kami</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Berbagai jenis mobil dari berbagai merek terkenal di dunia.</p>
+            </div>
+            
+            <div class="relative">
+                <div class="flex overflow-x-auto pb-4 scrollbar-hide" id="car-collection">
+                    <div class="flex space-x-6">
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="Red Toyota Supra sports car with black racing stripes on a racetrack" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">Toyota Supra</h3>
+                                    <p class="text-gray-600 text-sm">Sports Car</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="White Honda CR-V SUV parked in a mountain landscape with sunset" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">Honda CR-V</h3>
+                                    <p class="text-gray-600 text-sm">SUV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="Silver Mercedes-Benz S-Class luxury sedan parked in front of a modern hotel" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">Mercedes S-Class</h3>
+                                    <p class="text-gray-600 text-sm">Luxury Sedan</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="Blue Suzuki Ertiga MPV parked in a suburban neighborhood with family" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">Suzuki Ertiga</h3>
+                                    <p class="text-gray-600 text-sm">MPV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="Black BMW X5 SUV parked in an urban setting with city skyline" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">BMW X5</h3>
+                                    <p class="text-gray-600 text-sm">Luxury SUV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-64 flex-shrink-0">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden car-card transition duration-300">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://placehold.co/400x300" alt="Yellow Daihatsu Ayla city car parked in a colorful urban street" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-lg mb-1">Daihatsu Ayla</h3>
+                                    <p class="text-gray-600 text-sm">City Car</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-blue-600 hover:bg-blue-50 focus:outline-none" id="prev-car">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-blue-600 hover:bg-blue-50 focus:outline-none" id="next-car">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-16 bg-white" id="about">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Tentang AutoPrice</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Platform prediksi harga mobil berbasis teknologi machine learning terdepan.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-brain text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Teknologi Canggih</h3>
+                    <p class="text-gray-600">Menggunakan model machine learning terbaru yang terus diperbarui untuk memberikan prediksi harga yang akurat berdasarkan data pasar terkini.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-database text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Data Ekstensif</h3>
+                    <p class="text-gray-600">Database kami mencakup ribuan transaksi mobil dari berbagai merek dan model untuk memastikan prediksi yang representatif.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-user-shield text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Transparan & Akurat</h3>
+                    <p class="text-gray-600">Kami memberikan breakdown faktor-faktor yang mempengaruhi prediksi harga sehingga Anda bisa memahami bagaimana harga tersebut ditentukan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">AutoPrice</h3>
+                    <p class="text-gray-400">Platform prediksi harga mobil berbasis AI yang membantu Anda membuat keputusan pembelian yang tepat.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Menu</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition duration-300">Beranda</a></li>
+                        <li><a href="#predict" class="text-gray-400 hover:text-white transition duration-300">Prediksi Harga</a></li>
+                        <li><a href="#cars" class="text-gray-400 hover:text-white transition duration-300">Pilih Mobil</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition duration-300">Tentang</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Kontak</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> Jakarta, Indonesia</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone-alt mr-2"></i> +62 123 4567 890</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-2"></i> info@autoprice.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Sosial Media</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 AutoPrice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+
+    // --- BAGIAN TERPENTING ADA DI SINI ---
+    // Menangani form saat tombol prediksi ditekan
+    document.getElementById('prediction-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah halaman refresh
+
+        const predictionResult = document.getElementById('prediction-result');
+        
+        // Tampilkan status loading
+        predictionResult.innerHTML = `
+            <div class="text-center py-12">
+                <i class="fas fa-spinner fa-spin text-blue-600 text-6xl mb-4"></i>
+                <p class="text-gray-500">Memproses prediksi Anda...</p>
+            </div>
+        `;
+
+        // Kumpulkan data dari semua input di dalam form
+        const formData = new FormData(this);
+        const dataToSend = {};
+        for (let [key, value] of formData.entries()) {
+            dataToSend[key] = value;
+        }
+
+        // Kirim data ke backend Flask
+        fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataToSend)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Tampilkan hasil dari server
+            if (data.error) {
+                // Jika ada error dari server
+                predictionResult.innerHTML = `
+                    <div class="text-center py-12 text-red-500">
+                        <i class="fas fa-exclamation-triangle text-6xl mb-4"></i>
+                        <p class="font-bold">Gagal Melakukan Prediksi</p>
+                        <p class="text-sm">${data.error}</p>
+                    </div>`;
+            } else {
+                // Jika prediksi berhasil
+                const details = data.details;
+                predictionResult.innerHTML = `
+                    <div class="result-animation w-full">
+                        <div class="bg-blue-600 text-white p-6 rounded-lg text-center">
+                            <p class="text-sm mb-2">HARGA PREDIKSI</p>
+                            <p class="text-4xl font-bold">${data.prediction_text}</p>
+                        </div>
+                    </div>`;
+            }
+        })
+        .catch(error => {
+            // Jika frontend gagal terhubung ke backend
+            console.error('Error:', error);
+            predictionResult.innerHTML = `
+                <div class="text-center py-12 text-red-500">
+                    <i class="fas fa-server text-6xl mb-4"></i>
+                    <p class="font-bold">Tidak Dapat Menghubungi Server</p>
+                    <p class="text-sm">Pastikan file 'app.py' sudah berjalan di terminal.</p>
+                </div>`;
+        });
+    });
+    // === KODE YANG DIPERBARUI SELESAI DI SINI ===
+
+
+    // --- Bagian ini juga tidak perlu diubah ---
+    // Logika untuk menampilkan daftar mobil dan filter
+    const carData = [ /* data mobil Anda */ ];
+    function formatPrice(price) { /* ... */ }
+    function renderCars(cars) { /* ... */ }
+    function applyFilters() { /* ... */ }
+    renderCars(carData);
+    document.getElementById('filter-brand').addEventListener('change', applyFilters);
+    document.getElementById('filter-price').addEventListener('change', applyFilters);
+    document.getElementById('filter-type').addEventListener('change', applyFilters);
+    document.getElementById('filter-year').addEventListener('change', applyFilters);
+    document.getElementById('load-more').addEventListener('click', function() {
+        alert('Fitur "Muat Lebih Banyak" akan aktif jika terhubung ke database.');
+    });
+    // --- Akhir bagian yang tidak perlu diubah ---
+</script>
+</body>
+</html>
